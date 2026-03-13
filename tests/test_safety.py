@@ -28,9 +28,9 @@ from py_common_lib.httpx.constrained_client import (
     ConstrainedClient,
     HARD_LIMIT_MIN_REQUEST_INTERVAL,
     HARD_LIMIT_OPERATION_TIMEOUT,
-    _clamp_operation_timeout,
-    _clamp_request_interval,
-    _clamp_request_timeout,
+    clamp_operation_timeout,
+    clamp_request_interval,
+    clamp_request_timeout,
 )
 
 
@@ -157,31 +157,31 @@ class TestClampFunctions:
     """クランプ関数のテスト."""
 
     def test_clamp_request_timeout_normal(self) -> None:
-        assert _clamp_request_timeout(30.0) == 30.0
+        assert clamp_request_timeout(30.0) == 30.0
 
     def test_clamp_request_timeout_too_low(self) -> None:
-        assert _clamp_request_timeout(0.5) == 1.0
+        assert clamp_request_timeout(0.5) == 1.0
 
     def test_clamp_request_timeout_too_high(self) -> None:
-        assert _clamp_request_timeout(200.0) == 120.0
+        assert clamp_request_timeout(200.0) == 120.0
 
     def test_clamp_request_interval_normal(self) -> None:
-        assert _clamp_request_interval(1.0) == 1.0
+        assert clamp_request_interval(1.0) == 1.0
 
     def test_clamp_request_interval_too_low(self) -> None:
-        assert _clamp_request_interval(0.1) == HARD_LIMIT_MIN_REQUEST_INTERVAL
+        assert clamp_request_interval(0.1) == HARD_LIMIT_MIN_REQUEST_INTERVAL
 
     def test_clamp_request_interval_too_high(self) -> None:
-        assert _clamp_request_interval(100.0) == 60.0
+        assert clamp_request_interval(100.0) == 60.0
 
     def test_clamp_operation_timeout_normal(self) -> None:
-        assert _clamp_operation_timeout(300.0) == 300.0
+        assert clamp_operation_timeout(300.0) == 300.0
 
     def test_clamp_operation_timeout_too_low(self) -> None:
-        assert _clamp_operation_timeout(-10.0) == 1.0
+        assert clamp_operation_timeout(-10.0) == 1.0
 
     def test_clamp_operation_timeout_too_high(self) -> None:
-        assert _clamp_operation_timeout(9999.0) == HARD_LIMIT_OPERATION_TIMEOUT
+        assert clamp_operation_timeout(9999.0) == HARD_LIMIT_OPERATION_TIMEOUT
 
 
 class TestConstrainedClient:
