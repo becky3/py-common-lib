@@ -7,7 +7,7 @@
 | パッケージ | 概要 |
 |-----------|------|
 | `py_common_lib.core` | HTTP 非依存のコアコンポーネント（BudgetTracker, CircuitBreaker） |
-| `py_common_lib.httpx` | httpx 用の制約付き HTTP クライアント（ConstrainedClient） |
+| `py_common_lib.httpx` | httpx 用の制約付き HTTP クライアント（ConstrainedClient）とクランプユーティリティ |
 
 ## 動作環境
 

@@ -35,9 +35,9 @@ from py_common_lib.httpx.constrained_client import (
     ConstrainedClient,
     HARD_LIMIT_MIN_REQUEST_INTERVAL,
     HARD_LIMIT_OPERATION_TIMEOUT,
-    _clamp_operation_timeout,
-    _clamp_request_interval,
-    _clamp_request_timeout,
+    clamp_operation_timeout,
+    clamp_request_interval,
+    clamp_request_timeout,
 )
 
 
@@ -166,22 +166,22 @@ class TestRequestIntervalInvariants:
     @settings(max_examples=200)
     def test_effective_interval_never_below_hard_limit(self, interval: float) -> None:
         """いかなる request_interval でもクランプ後は HARD_LIMIT 以上."""
-        clamped = _clamp_request_interval(interval)
+        clamped = clamp_request_interval(interval)
         assert clamped >= HARD_LIMIT_MIN_REQUEST_INTERVAL
 
     @given(interval=any_float)
     @settings(max_examples=200)
     def test_effective_interval_at_most_sixty(self, interval: float) -> None:
         """いかなる request_interval でもクランプ後は 60 以下."""
-        clamped = _clamp_request_interval(interval)
-        # 上限 60.0 は _clamp_request_interval 内のハードコーディング値
+        clamped = clamp_request_interval(interval)
+        # 上限 60.0 は clamp_request_interval 内のハードコーディング値
         assert clamped <= 60.0
 
     @given(interval=st.floats(min_value=0.5, max_value=60.0))
     @settings(max_examples=200)
     def test_valid_range_preserved(self, interval: float) -> None:
         """許容範囲内の値はそのまま保持される."""
-        clamped = _clamp_request_interval(interval)
+        clamped = clamp_request_interval(interval)
         assert clamped == interval
 
 
@@ -197,8 +197,8 @@ class TestRequestTimeoutInvariants:
     @settings(max_examples=200)
     def test_request_timeout_within_bounds(self, timeout: float) -> None:
         """いかなる request_timeout でもクランプ後は [1, 120] 範囲内."""
-        clamped = _clamp_request_timeout(timeout)
-        # 範囲 [1.0, 120.0] は _clamp_request_timeout 内のハードコーディング値
+        clamped = clamp_request_timeout(timeout)
+        # 範囲 [1.0, 120.0] は clamp_request_timeout 内のハードコーディング値
         assert 1.0 <= clamped <= 120.0
 
 
@@ -214,22 +214,22 @@ class TestOperationTimeoutInvariants:
     @settings(max_examples=200)
     def test_effective_timeout_never_exceeds_hard_limit(self, timeout: float) -> None:
         """いかなる operation_timeout でもクランプ後は HARD_LIMIT 以下."""
-        clamped = _clamp_operation_timeout(timeout)
+        clamped = clamp_operation_timeout(timeout)
         assert clamped <= HARD_LIMIT_OPERATION_TIMEOUT
 
     @given(timeout=any_float)
     @settings(max_examples=200)
     def test_effective_timeout_at_least_one(self, timeout: float) -> None:
         """いかなる operation_timeout でもクランプ後は 1.0 以上."""
-        clamped = _clamp_operation_timeout(timeout)
-        # 下限 1.0 は _clamp_operation_timeout 内のハードコーディング値
+        clamped = clamp_operation_timeout(timeout)
+        # 下限 1.0 は clamp_operation_timeout 内のハードコーディング値
         assert clamped >= 1.0
 
     @given(timeout=st.floats(min_value=1.0, max_value=600.0))
     @settings(max_examples=200)
     def test_valid_range_preserved(self, timeout: float) -> None:
         """許容範囲内の値はそのまま保持される."""
-        clamped = _clamp_operation_timeout(timeout)
+        clamped = clamp_operation_timeout(timeout)
         assert clamped == timeout
 
 

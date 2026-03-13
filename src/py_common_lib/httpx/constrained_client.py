@@ -29,7 +29,7 @@ HARD_LIMIT_MIN_REQUEST_INTERVAL = 0.5  # 秒
 HARD_LIMIT_OPERATION_TIMEOUT = 600.0  # 秒
 
 
-def _clamp_request_timeout(value: float) -> float:
+def clamp_request_timeout(value: float) -> float:
     """リクエストタイムアウトを許容範囲にクランプする."""
     clamped = max(1.0, min(value, 120.0))
     if clamped != value:
@@ -41,7 +41,7 @@ def _clamp_request_timeout(value: float) -> float:
     return clamped
 
 
-def _clamp_request_interval(value: float) -> float:
+def clamp_request_interval(value: float) -> float:
     """リクエスト間隔を許容範囲にクランプする."""
     clamped = max(HARD_LIMIT_MIN_REQUEST_INTERVAL, min(value, 60.0))
     if clamped != value:
@@ -54,7 +54,7 @@ def _clamp_request_interval(value: float) -> float:
     return clamped
 
 
-def _clamp_operation_timeout(value: float) -> float:
+def clamp_operation_timeout(value: float) -> float:
     """操作全体タイムアウトを許容範囲にクランプする."""
     clamped = max(1.0, min(value, HARD_LIMIT_OPERATION_TIMEOUT))
     if clamped != value:
@@ -98,9 +98,9 @@ class ConstrainedClient:
             operation_timeout: 操作全体のタイムアウト（秒）。許容範囲: 1〜600
             headers: HTTP ヘッダー
         """
-        self._request_timeout = _clamp_request_timeout(request_timeout)
-        self._request_interval = _clamp_request_interval(request_interval)
-        self._operation_timeout = _clamp_operation_timeout(operation_timeout)
+        self._request_timeout = clamp_request_timeout(request_timeout)
+        self._request_interval = clamp_request_interval(request_interval)
+        self._operation_timeout = clamp_operation_timeout(operation_timeout)
         self._headers = dict(headers) if headers else {}
         self._budget = BudgetTracker(max_requests=max_requests)
         self._circuit_breaker = CircuitBreaker(threshold=circuit_breaker_threshold)
