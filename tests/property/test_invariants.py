@@ -44,9 +44,11 @@ from py_common_lib.httpx.constrained_client import (
 @pytest.fixture(autouse=True)
 def _suppress_clamp_warnings() -> None:
     """プロパティテスト中はクランプ警告ログを抑制する."""
-    logging.getLogger("py_common_lib").setLevel(logging.ERROR)
+    logger = logging.getLogger("py_common_lib")
+    original_level = logger.level
+    logger.setLevel(logging.ERROR)
     yield  # type: ignore[misc]
-    logging.getLogger("py_common_lib").setLevel(logging.NOTSET)
+    logger.setLevel(original_level)
 
 
 # ---------------------------------------------------------------------------

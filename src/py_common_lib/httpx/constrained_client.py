@@ -101,7 +101,7 @@ class ConstrainedClient:
         self._request_timeout = _clamp_request_timeout(request_timeout)
         self._request_interval = _clamp_request_interval(request_interval)
         self._operation_timeout = _clamp_operation_timeout(operation_timeout)
-        self._headers = headers or {}
+        self._headers = dict(headers) if headers else {}
         self._budget = BudgetTracker(max_requests=max_requests)
         self._circuit_breaker = CircuitBreaker(threshold=circuit_breaker_threshold)
         self._session: httpx.AsyncClient | None = None
@@ -143,8 +143,10 @@ class ConstrainedClient:
     ) -> None:
         """操作を終了し、セッションをクローズする."""
         if self._session:
-            await self._session.aclose()
-            self._session = None
+            try:
+                await self._session.aclose()
+            finally:
+                self._session = None
 
     def _check_operation_timeout(self) -> None:
         """操作全体のタイムアウトをチェックする.
@@ -242,6 +244,8 @@ class ConstrainedClient:
             self._circuit_breaker.record_success()
             return resp
         except Exception:
+            # 失敗記録。閾値到達時は CircuitBreakerOpenError が
+            # 元例外に代わって送出される（操作停止が優先）
             self._circuit_breaker.record_failure()
             raise
 
@@ -249,7 +253,7 @@ class ConstrainedClient:
         self,
         url: str,
         *,
-        json: object = None,
+        json: object | None = None,
         params: dict[str, str] | None = None,
         follow_redirects: bool = False,
     ) -> httpx.Response:
@@ -286,5 +290,7 @@ class ConstrainedClient:
             self._circuit_breaker.record_success()
             return resp
         except Exception:
+            # 失敗記録。閾値到達時は CircuitBreakerOpenError が
+            # 元例外に代わって送出される（操作停止が優先）
             self._circuit_breaker.record_failure()
             raise
