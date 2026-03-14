@@ -25,7 +25,7 @@ from py_common_lib.core.circuit_breaker import (
 logger = logging.getLogger(__name__)
 
 # ハードリミット: 設定・引数・環境変数で引き上げ不可
-HARD_LIMIT_MIN_REQUEST_INTERVAL = 0.5  # 秒
+HARD_LIMIT_MIN_REQUEST_INTERVAL = 0.1  # 秒
 HARD_LIMIT_OPERATION_TIMEOUT = 600.0  # 秒
 
 
@@ -92,7 +92,7 @@ class ConstrainedClient:
 
         Args:
             request_timeout: 個別リクエストのタイムアウト（秒）。許容範囲: 1〜120
-            request_interval: リクエスト間の最低間隔（秒）。許容範囲: 0.5〜60
+            request_interval: リクエスト間の最低間隔（秒）。許容範囲: 0.1〜60
             max_requests: 操作あたりのリクエスト上限。上限: 500
             circuit_breaker_threshold: サーキットブレーカー閾値。上限: 5
             operation_timeout: 操作全体のタイムアウト（秒）。許容範囲: 1〜600
