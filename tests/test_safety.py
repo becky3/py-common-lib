@@ -169,7 +169,7 @@ class TestClampFunctions:
         assert clamp_request_interval(1.0) == 1.0
 
     def test_clamp_request_interval_too_low(self) -> None:
-        assert clamp_request_interval(0.1) == HARD_LIMIT_MIN_REQUEST_INTERVAL
+        assert clamp_request_interval(0.05) == HARD_LIMIT_MIN_REQUEST_INTERVAL
 
     def test_clamp_request_interval_too_high(self) -> None:
         assert clamp_request_interval(100.0) == 60.0

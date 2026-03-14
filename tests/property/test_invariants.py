@@ -177,7 +177,7 @@ class TestRequestIntervalInvariants:
         # 上限 60.0 は clamp_request_interval 内のハードコーディング値
         assert clamped <= 60.0
 
-    @given(interval=st.floats(min_value=0.5, max_value=60.0))
+    @given(interval=st.floats(min_value=0.1, max_value=60.0))
     @settings(max_examples=200)
     def test_valid_range_preserved(self, interval: float) -> None:
         """許容範囲内の値はそのまま保持される."""
