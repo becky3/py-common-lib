@@ -1,6 +1,6 @@
 # py-common-lib
 
-複数プロジェクトで共有する Python ライブラリ。制約付き HTTP クライアント（バジェット・サーキットブレーカー・レート制限）を提供する。
+複数プロジェクトで共有する Python ライブラリ。制約付き HTTP クライアントやシークレットストアなどの共通ユーティリティを提供する。
 
 ## パッケージ構造
 
@@ -8,6 +8,7 @@
 |-----------|------|
 | `py_common_lib.core` | HTTP 非依存のコアコンポーネント（BudgetTracker, CircuitBreaker） |
 | `py_common_lib.httpx` | httpx 用の制約付き HTTP クライアント（ConstrainedClient）とクランプユーティリティ |
+| `py_common_lib.secrets` | OS セキュアストレージからのシークレット取得（keyring） |
 
 ## 動作環境
 
