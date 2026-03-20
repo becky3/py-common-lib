@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 # ハードリミット: 設定・引数・環境変数で引き上げ不可
-HARD_LIMIT_MAX_TOTAL_REQUESTS = 500
+HARD_LIMIT_MAX_TOTAL_REQUESTS = 10_000
 
 
 class BudgetExhaustedError(Exception):

@@ -79,7 +79,7 @@ class TestBudgetTracker:
 
     def test_hard_limit_cannot_be_raised(self) -> None:
         """ハードリミットを超える値を設定しても上限でクランプされる."""
-        bt = BudgetTracker(max_requests=999)
+        bt = BudgetTracker(max_requests=HARD_LIMIT_MAX_TOTAL_REQUESTS + 499)
         assert bt.limit == HARD_LIMIT_MAX_TOTAL_REQUESTS
         # ハードリミット回数分消費できる
         for _ in range(HARD_LIMIT_MAX_TOTAL_REQUESTS):

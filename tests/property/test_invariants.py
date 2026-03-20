@@ -333,7 +333,7 @@ class TestConstrainedClientInvariants:
             circuit_breaker_threshold=circuit_breaker_threshold,
             operation_timeout=operation_timeout,
         )
-        # バジェット: [1, 500]（公開プロパティ経由）
+        # バジェット: [1, 10000]（公開プロパティ経由）
         assert 1 <= client.budget.limit <= HARD_LIMIT_MAX_TOTAL_REQUESTS
         # サーキットブレーカー: [1, 5]（公開プロパティ経由）
         assert 1 <= client.circuit_breaker.threshold <= HARD_LIMIT_CONSECUTIVE_FAILURES
