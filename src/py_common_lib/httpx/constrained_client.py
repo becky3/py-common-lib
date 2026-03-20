@@ -93,7 +93,7 @@ class ConstrainedClient:
         Args:
             request_timeout: 個別リクエストのタイムアウト（秒）。許容範囲: 1〜120
             request_interval: リクエスト間の最低間隔（秒）。許容範囲: 0.1〜60
-            max_requests: 操作あたりのリクエスト上限。上限: 500
+            max_requests: 操作あたりのリクエスト上限。上限: 10,000
             circuit_breaker_threshold: サーキットブレーカー閾値。上限: 5
             operation_timeout: 操作全体のタイムアウト（秒）。許容範囲: 1〜600
             headers: HTTP ヘッダー

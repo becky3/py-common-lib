@@ -312,7 +312,7 @@ class TestConstrainedClientInvariants:
     @given(
         request_timeout=st.floats(min_value=-10.0, max_value=1000.0, allow_nan=False),
         request_interval=st.floats(min_value=-10.0, max_value=1000.0, allow_nan=False),
-        max_requests=st.integers(min_value=-100, max_value=10_000),
+        max_requests=st.integers(min_value=-100, max_value=HARD_LIMIT_MAX_TOTAL_REQUESTS * 2),
         circuit_breaker_threshold=st.integers(min_value=-100, max_value=1_000),
         operation_timeout=st.floats(min_value=-10.0, max_value=10_000.0, allow_nan=False),
     )
@@ -333,7 +333,7 @@ class TestConstrainedClientInvariants:
             circuit_breaker_threshold=circuit_breaker_threshold,
             operation_timeout=operation_timeout,
         )
-        # バジェット: [1, 500]（公開プロパティ経由）
+        # バジェット: [1, HARD_LIMIT_MAX_TOTAL_REQUESTS]（公開プロパティ経由）
         assert 1 <= client.budget.limit <= HARD_LIMIT_MAX_TOTAL_REQUESTS
         # サーキットブレーカー: [1, 5]（公開プロパティ経由）
         assert 1 <= client.circuit_breaker.threshold <= HARD_LIMIT_CONSECUTIVE_FAILURES
