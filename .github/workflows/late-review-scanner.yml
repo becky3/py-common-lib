@@ -23,4 +23,5 @@ jobs:
     uses: becky3/shared-workflows/.github/workflows/late-review-scanner.yml@main
     with:
       scan_hours: 24
-    secrets: inherit
+    secrets:
+      REPO_OWNER_PAT: ${{ secrets.REPO_OWNER_PAT }}
