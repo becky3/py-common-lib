@@ -5,9 +5,9 @@
 ## パッケージ構造
 
 | パッケージ | 概要 |
-| ----------- | ------ |
+|-----------|------|
 | `py_common_lib.core` | HTTP 非依存のコアコンポーネント（BudgetTracker, CircuitBreaker） |
-| `py_common_lib.httpx` | httpx 用の制約付き HTTP クライアントとクランプユーティリティ |
+| `py_common_lib.httpx` | httpx 用の制約付き HTTP クライアント（ConstrainedClient）とクランプユーティリティ |
 | `py_common_lib.secrets` | OS セキュアストレージからのシークレット取得（keyring） |
 
 ## 動作環境
