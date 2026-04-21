@@ -78,14 +78,14 @@ httpx.AsyncClient をラップし、全制約を統合する。async context man
 
 #### 初期化パラメータ
 
-| パラメータ | デフォルト | 説明 |
-|-----------|-----------|------|
-| `request_timeout` | 30.0 | 個別リクエストタイムアウト（秒）。許容範囲: 1〜120 |
-| `request_interval` | 1.0 | リクエスト間隔（秒）。許容範囲: 0.1〜60 |
-| `max_requests` | 10,000 | 操作あたりリクエスト上限。上限: 10,000 |
-| `circuit_breaker_threshold` | 5 | サーキットブレーカー閾値。上限: 5 |
-| `operation_timeout` | 600.0 | 操作全体タイムアウト（秒）。許容範囲: 1〜600 |
-| `headers` | None | HTTP ヘッダー |
+| パラメータ | 型 | デフォルト | 説明 |
+|-----------|---|----------|------|
+| `request_timeout` | `float` | 30.0 | 個別リクエストタイムアウト（秒）。許容範囲: 1〜120 |
+| `request_interval` | `float` | 1.0 | リクエスト間隔（秒）。許容範囲: 0.1〜60 |
+| `max_requests` | `int` | 10,000 | 操作あたりリクエスト上限。上限: 10,000 |
+| `circuit_breaker_threshold` | `int` | 5 | サーキットブレーカー閾値。上限: 5 |
+| `operation_timeout` | `float` | 600.0 | 操作全体タイムアウト（秒）。許容範囲: 1〜600 |
+| `headers` | `dict[str, str] \| None` | None | HTTP ヘッダー |
 
 | 操作 | 振る舞い |
 |------|---------|
