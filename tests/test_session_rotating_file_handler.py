@@ -176,3 +176,32 @@ class TestSessionRotatingFileHandler:
         content = log_path.read_text(encoding="utf-8")
         assert "first" in content
         assert "second" in content
+
+    def test_emit_appends_after_external_write_without_overwriting(self, tmp_path: Path) -> None:
+        """外部プロセスがファイルに追記した後でも、emit はファイル末尾に書き込む."""
+        started_at = datetime(2026, 4, 17, 8, 30, 0)
+        handler = SessionRotatingFileHandler(
+            log_dir=tmp_path, prefix=_PREFIX, started_at=started_at, max_bytes=1_000_000
+        )
+        log_path = tmp_path / "app-server-20260417-083000-00001.log"
+
+        try:
+            handler.emit(_make_record("before-external"))
+            handler.flush()
+
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write("EXTERNAL-DATA\n")
+
+            handler.emit(_make_record("after-external"))
+            handler.flush()
+        finally:
+            handler.close()
+
+        content = log_path.read_text(encoding="utf-8")
+        assert "before-external" in content
+        assert "EXTERNAL-DATA" in content
+        assert "after-external" in content
+        before_pos = content.index("before-external")
+        external_pos = content.index("EXTERNAL-DATA")
+        after_pos = content.index("after-external")
+        assert before_pos < external_pos < after_pos

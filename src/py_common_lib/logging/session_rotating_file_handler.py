@@ -68,7 +68,12 @@ class SessionRotatingFileHandler(logging.FileHandler):
         except Exception:
             self.handleError(record)
             return
-        super().emit(record)
+        try:
+            if self.stream is not None:
+                self.stream.seek(0, os.SEEK_END)
+            super().emit(record)
+        except Exception:
+            self.handleError(record)
 
     def _should_rollover(self) -> bool:
         if self.stream is None:
