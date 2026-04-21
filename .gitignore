@@ -12,3 +12,4 @@ build/
 .venv/
 .hypothesis/
 .claude/scheduled_tasks.lock
+.pr-creation-authorized
