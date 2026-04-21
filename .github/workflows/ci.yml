@@ -1,29 +1,24 @@
-name: CI
+# Quality Check — Caller
+#
+# PR 作成・更新時の品質チェック（テスト・lint・型チェック・markdownlint）。
+# Reusable Workflow (shared-workflows) を呼び出す。
 
-on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
+name: Quality Check
 
 permissions:
   contents: read
 
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
-      - run: uv sync
-      - run: uv run ruff check .
-      - run: uv run ruff format --check .
-      - run: uv run mypy src
+on:
+  pull_request:
+    branches: [main]
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
-      - run: uv sync
-      - run: uv run pytest --tb=short
+jobs:
+  quality:
+    uses: becky3/shared-workflows/.github/workflows/quality-check.yml@main
+    with:
+      python_version: "3.11"
+      install_command: "uv sync"
+      test_command: "uv run pytest --tb=short"
+      lint_command: "uv run ruff check . && uv run ruff format --check ."
+      typecheck_command: "uv run mypy src"
+      markdownlint: true
