@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -34,6 +35,9 @@ class SessionRotatingFileHandler(logging.FileHandler):
     ) -> None:
         if max_bytes <= 0:
             msg = f"max_bytes must be positive, got {max_bytes}"
+            raise ValueError(msg)
+        if Path(prefix).name != prefix:
+            msg = f"prefix must not contain path separators, got {prefix!r}"
             raise ValueError(msg)
         self._log_dir = log_dir
         self._prefix = prefix
@@ -77,6 +81,6 @@ class SessionRotatingFileHandler(logging.FileHandler):
             self.stream = None  # type: ignore[assignment]
         self._sequence += 1
         self._raise_if_current_exists()
-        self.baseFilename = str(self._current_path())
+        self.baseFilename = os.path.abspath(self._current_path())
         self.mode = "w"
         self.stream = self._open()

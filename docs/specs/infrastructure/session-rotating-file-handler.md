@@ -20,6 +20,8 @@
 - ファイル名形式は `{prefix}YYYYMMDD-HHMMSS-NNNNN.log` で固定（NNNNN は 5 桁ゼロパディング連番）
 - 連番はセッション開始時に 00001 から始まる
 - `max_bytes` は正値必須（0 以下は `ValueError`）
+- `prefix` はパス区切り文字を含んではならない（`log_dir` 外への書き込み防止。違反時は `ValueError`）
+- ロールオーバー時の `baseFilename` は絶対パスで設定する（`log_dir` が相対パスの場合でも一貫した出力先を保証）
 - 初期化時に対象ファイルが既に存在する場合は `FileExistsError` を送出する（既存ファイルの上書き防止）
 - ロールオーバー先ファイルが既に存在する場合も `FileExistsError` を送出する（`emit` 経由で `handleError` に委ねる）
 - `stream` が `None` の状態で `emit` された場合、追記モード（`mode='a'`）で再オープンする（既存内容の truncate 防止）
@@ -88,6 +90,8 @@ flowchart TB
 | ロールオーバー先ファイルが既存 | `FileExistsError` を `handleError` に委ねる |
 | `stream` が `None` で `emit` | 追記モードで再オープン（既存内容を保持） |
 | `max_bytes` が非常に小さい値 | 毎回ロールオーバーが発生するが正常動作する |
+| `prefix` にパス区切り文字を含む | `ValueError` を送出 |
+| `log_dir` が相対パス | 初期化・ロールオーバーとも絶対パスで管理し一貫した出力先を保証 |
 
 ## 関連ドキュメント
 

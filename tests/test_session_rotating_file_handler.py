@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -112,6 +113,18 @@ class TestSessionRotatingFileHandler:
                 max_bytes=invalid_value,
             )
 
+    @pytest.mark.parametrize("bad_prefix", ["../evil-", "sub/dir-", "back\\slash-"])
+    def test_prefix_with_path_separators_raises_value_error(
+        self, tmp_path: Path, bad_prefix: str
+    ) -> None:
+        with pytest.raises(ValueError, match="prefix must not contain path separators"):
+            SessionRotatingFileHandler(
+                log_dir=tmp_path,
+                prefix=bad_prefix,
+                started_at=datetime(2026, 4, 17, 8, 30, 0),
+                max_bytes=1_000_000,
+            )
+
     def test_rollover_raises_when_next_file_already_exists(self, tmp_path: Path) -> None:
         """ロールオーバー先ファイルが既存の場合、emit 経由で handleError に委ねる."""
         started_at = datetime(2026, 4, 17, 8, 30, 0)
@@ -120,18 +133,24 @@ class TestSessionRotatingFileHandler:
         handler = SessionRotatingFileHandler(
             log_dir=tmp_path, prefix=_PREFIX, started_at=started_at, max_bytes=50
         )
-        errors: list[BaseException] = []
-        handler.handleError = (  # type: ignore[method-assign]
-            lambda record: errors.append(  # noqa: ARG005
-                FileExistsError("rollover collision")
-            )
-        )
+        captured_exceptions: list[BaseException] = []
+
+        original_handle_error = handler.handleError
+
+        def capturing_handle_error(record: logging.LogRecord) -> None:
+            exc = sys.exc_info()[1]
+            if exc is not None:
+                captured_exceptions.append(exc)
+            original_handle_error(record)
+
+        handler.handleError = capturing_handle_error  # type: ignore[method-assign]
         try:
             for i in range(10):
                 handler.emit(_make_record(f"line-{i}" + "x" * 40))
         finally:
             handler.close()
-        assert errors, "handleError should capture rollover FileExistsError"
+        assert captured_exceptions, "handleError should capture rollover exception"
+        assert isinstance(captured_exceptions[0], FileExistsError)
         assert conflicting.read_text(encoding="utf-8") == "preexisting"
 
     def test_emit_reopens_stream_in_append_mode(self, tmp_path: Path) -> None:
