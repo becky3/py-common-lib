@@ -36,7 +36,7 @@ class SessionRotatingFileHandler(logging.FileHandler):
         if max_bytes <= 0:
             msg = f"max_bytes must be positive, got {max_bytes}"
             raise ValueError(msg)
-        if Path(prefix).name != prefix:
+        if "/" in prefix or "\\" in prefix:
             msg = f"prefix must not contain path separators, got {prefix!r}"
             raise ValueError(msg)
         self._log_dir = log_dir
